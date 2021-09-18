@@ -1,0 +1,49 @@
+//1
+CREATE TABLE Desconto(
+    Categoria INT PRIMARY KEY,
+    Percentual DECIMAL(3,2)
+);
+CREATE TABLE Funcionario(
+    Codfunc INT PRIMARY KEY,
+    Categoria INT NOT NULL,
+    Nome VARCHAR(45),
+    Salario NUMERIC(8,2)
+);
+ALTER TABLE Funcionario
+	ADD CONSTRAINT categoria_FK FOREIGN KEY (Categoria) REFERENCES Desconto (Categoria);
+ALTER TABLE `27_04`.`funcionario` 
+CHANGE COLUMN `Codfunc` `Codfunc` INT NOT NULL AUTO_INCREMENT ;
+
+//2
+DROP PROCEDURE calcula_desconto;
+
+DELIMITER //
+CREATE PROCEDURE calcula_desconto (IN COD INT, OUT RESULT DECIMAL(8,2)) 
+	BEGIN
+		DECLARE PERCENT FLOAT;
+        
+		SELECT D.Percentual INTO PERCENT FROM Desconto D
+			INNER JOIN Funcionario F
+			ON D.Categoria = F.Categoria
+			WHERE F.Codfunc = COD;
+            
+		SELECT F.Salario * PERCENT INTO RESULT FROM Funcionario F
+			WHERE F.Codfunc = COD;
+            
+        IF PERCENT > 0.05 THEN
+			SET RESULT = RESULT + 100;
+		END IF;
+    END //
+DELIMITER ;
+
+INSERT INTO Desconto(Categoria, Percentual) 
+	VALUES
+		(1, 0.02),
+        	(2, 0.06);
+INSERT INTO Funcionario(Categoria, Nome, Salario) 
+	VALUES
+		(1,'Bianca',4000.00),
+	        (2,'Leandro',5000.50);
+
+CALL calcula_desconto(3, @resultado);
+SELECT @resultado;

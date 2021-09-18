@@ -1,0 +1,12 @@
+DELIMITER //
+CREATE PROCEDURE insereDados (novo_ano INT,normal_cod_mun CHAR(7),novo_pib DECIMAL(12,3),novo_populacao INT)
+BEGIN
+    		
+	BEGIN	
+        DECLARE CONTINUE HANDLER FOR SQLSTATE '23000'
+        INSERT INTO senso(novo_ano,normal_cod_mun,novo_pib,novo_populacao) VALUES (ano,cod_mun,pib,populacao);
+	END;
+END //
+DELIMITER ;
+
+CALL insereDados(2021, '3100104', 51350120, 2300000);

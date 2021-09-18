@@ -1,0 +1,18 @@
+DROP PROCEDURE proc_imposto;
+
+DELIMITER $$
+CREATE PROCEDURE proc_imposto(IN salario FLOAT)
+	BEGIN
+    	DECLARE imposto FLOAT;
+			CASE
+				WHEN salario <= 1903.98 THEN SET imposto = "ISENTO";
+				WHEN salario > 1903.98 AND salario <= 2826.65 THEN SET imposto = salario*0.075;
+				WHEN salario > 2826.65 AND salario <= 3751.05 THEN SET imposto = salario*0.150;
+				WHEN salario > 3751.05 AND salario <= 4664.67 THEN SET imposto = salario*0.225;
+				ELSE SET imposto = salario*0.275;
+			END CASE;
+		SELECT imposto AS 'Alíquota';
+	END $$
+DELIMITER ;
+
+CALL proc_imposto(3000);

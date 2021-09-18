@@ -1,0 +1,52 @@
+--1. Selecione todos os municípios cujo estado é “Minas Gerais”. Escreva o 
+comando utilizando: (a) combinação de tabelas - where e (b) junção de 
+tabelas - join
+
+SELECT m.nome_mun 
+FROM municipio m INNER JOIN uf 
+ON m.cod_uf = uf.cod_uf 
+WHERE uf.estado = 'Minas Gerais';
+
+--2. Selecione os dados de pib, população e pib per capta para todos os anos 
+de senso para a cidade de Guarulhos. 
+
+SELECT s.pib, s.populacao, s.pib/s.populacao AS 'pib per capta'
+FROM senso s INNER JOIN municipio m
+ON s.cod_mun = m.cod_mun
+WHERE m.nome_mun = 'Guarulhos';
+
+--3. Selecione os dados populacionais dos municípios em todos os anos que 
+houve senso.
+
+SELECT s.ano, m.nome_mun AS nome, s.populacao, s.pib
+FROM senso s INNER JOIN municipio m
+ON s.cod_mun = m.cod_mun
+ORDER BY m.nome_mun;
+
+--4. O MySQL não implementa o Full Join e o Outer Excluding Join. Como 
+podemos contornar essa questão?
+
+--FULL JOIN
+SELECT <select_list>
+FROM Tabela A
+LEFT JOIN Tabela B
+ON A.key = B.Key
+UNION ALL
+SELECT <select_list>
+FROM Tabela A
+RIGHT JOIN Tabela B
+ON A.key = B.Key
+WHERE A.KEY IS NULL
+
+--OUTER EXCLUDING JOIN
+SELECT <select_list>
+FROM Tabela A
+LEFT JOIN Tabela B
+ON A.key = B.Key
+WHERE B.KEY IS NULL
+UNION ALL
+SELECT <select_list>
+FROM Tabela A
+RIGHT JOIN Tabela B
+ON A.key = B.Key
+WHERE A.KEY IS NULL

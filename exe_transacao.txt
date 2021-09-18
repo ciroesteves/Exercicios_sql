@@ -1,0 +1,16 @@
+DELIMITER |
+CREATE PROCEDURE executaTransferencia(transferId VARCHAR(30), valor FLOAT, contaOrigem VARCHAR(15), contaDestino VARCHAR(15))
+BEGIN
+	START TRANSACTION;
+	UPDATE ContaCorrente SET Saldo = Saldo - valor WHERE contaid = contaOrigem;
+    	IF Saldo < 0 THEN
+		ROLLBACK;
+		SELECT 'Saldo Indisponível.' AS Mensagem;
+	ELSE 
+		UPDATE ContaCorrente SET Saldo = Saldo + valor WHERE contaid = contaDestino;
+        	INSERT INTO Transferencia VALUES (transferId, contaOrigem, contaDestino, valor);
+        	SELECT 'Transferência Realizada com Sucesso.' AS Mensagem;
+        	COMMIT;
+	END IF;
+END|
+DELIMITER ;

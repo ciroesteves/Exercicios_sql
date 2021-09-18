@@ -1,0 +1,30 @@
+--1. Mostre o total da população do estado do “Acre” no ano de 2014.
+
+SELECT SUM(S.populacao) AS 'População Total' FROM senso S
+INNER JOIN municipio M
+ON S.cod_mun = M.cod_mun
+WHERE S.ano = 2014 AND M.cod_uf = (SELECT uf.cod_uf FROM uf
+WHERE uf.estado = 'Acre');
+
+--2. Mostre o total da população do estado do “Acre” em cada ano.
+
+SELECT S.ano, SUM(S.populacao) AS 'População Total' FROM senso S
+INNER JOIN municipio M
+ON S.cod_mun = M.cod_mun
+INNER JOIN uf UF
+ON UF.cod_uf = M.cod_uf
+WHERE UF.estado = 'Acre'
+GROUP BY S.ano;
+
+--3. Mostre o total de municípios do Brasil.
+
+SELECT COUNT(M.cod_mun) AS 'Total de Municípios' FROM municipio M;
+
+--4. Mostre os municípios do estado de “Roraima”, ordenados por cod_regiao.
+--Se cod_regiao for Null, ordene pelo nome do município.
+
+SELECT M.cod_regiao, M.nome_mun FROM municipio M
+INNER JOIN uf UF
+ON UF.cod_uf = M.cod_uf
+WHERE UF.estado = 'Roraima'
+ORDER BY M.cod_regiao, ifnull(M.cod_regiao, M.nome_mun);
